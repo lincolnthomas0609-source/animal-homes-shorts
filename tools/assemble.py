@@ -13,7 +13,13 @@ import os
 import subprocess
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-FONTS = "/System/Library/Fonts/Supplemental"
+FONTS = os.path.join(ROOT, "assets", "fonts")
+if not os.path.isdir(FONTS):
+    FONTS = "/System/Library/Fonts/Supplemental"
+
+
+def filter_path(path):
+    return path.replace("\\", "\\\\").replace(":", "\\:").replace("'", "\\'")
 
 
 def main():
@@ -56,8 +62,7 @@ def main():
     filters.append(f"{''.join(mix)}amix=inputs={len(mix)}:normalize=0:duration=longest,"
                    f"atrim=0:{duration},loudnorm=I=-14:TP=-1.5:LRA=11,aresample=48000,"
                    f"aformat=channel_layouts=stereo[aout]")
-    subs = a.captions.replace("\\", "\\\\").replace(":", "\\:").replace("'", "\\'")
-    filters.append(f"[0:v]subtitles='{subs}':fontsdir='{FONTS}'[vout]")
+    filters.append(f"[0:v]subtitles='{filter_path(a.captions)}':fontsdir='{filter_path(FONTS)}'[vout]")
 
     cmd = ["ffmpeg", "-hide_banner", "-loglevel", "error", "-y", *inputs,
            "-filter_complex", ";".join(filters), "-map", "[vout]", "-map", "[aout]",

@@ -10,9 +10,13 @@ come from the scene's cues file.
 import argparse
 import json
 import math
+import os
 import re
 
-HEADER = """[Script Info]
+BUNDLED_FONT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "assets", "fonts", "Nunito-Black.ttf")
+FONT = "Nunito Black" if os.path.isfile(BUNDLED_FONT) else "Arial Rounded MT Bold"
+
+HEADER = f"""[Script Info]
 ScriptType: v4.00+
 PlayResX: 1080
 PlayResY: 1920
@@ -21,9 +25,9 @@ ScaledBorderAndShadow: yes
 
 [V4+ Styles]
 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
-Style: Caption,Arial Rounded MT Bold,84,&H00FFFFFF,&H00FFFFFF,&H00141414,&H64000000,0,0,0,0,100,100,0,0,1,7,3,2,80,80,560,1
-Style: Label,Arial Rounded MT Bold,46,&H00FFFFFF,&H00FFFFFF,&H00141414,&H64000000,0,0,0,0,100,100,1,0,1,4,0,8,60,60,190,1
-Style: Note,Arial Rounded MT Bold,32,&H00E8E8E8,&H00FFFFFF,&H00141414,&H64000000,0,0,0,0,100,100,0,0,1,3,0,7,50,50,120,1
+Style: Caption,{FONT},84,&H00FFFFFF,&H00FFFFFF,&H00141414,&H64000000,0,0,0,0,100,100,0,0,1,7,3,2,80,80,560,1
+Style: Label,{FONT},46,&H00FFFFFF,&H00FFFFFF,&H00141414,&H64000000,0,0,0,0,100,100,1,0,1,4,0,8,60,60,190,1
+Style: Note,{FONT},32,&H00E8E8E8,&H00FFFFFF,&H00141414,&H64000000,0,0,0,0,100,100,0,0,1,3,0,7,50,50,120,1
 
 [Events]
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text

@@ -67,6 +67,16 @@ Voice samples to compare are in `audio/narration/samples/kokoro/` (Kokoro) and `
 
 To open a scene in Blender's interface and look around: open `renders/<scene name>.blend` (it's saved on every render).
 
+## Working on two machines
+
+The project is a private git repo hosted on Cursor, so it can be rendered on a Windows PC as well as this Mac.
+Setup steps for the PC are in [`SETUP_WINDOWS.md`](SETUP_WINDOWS.md).
+
+- The zsh scripts in `tools/*.sh` are Mac-only. `tools/render.py`, `stills.py`, `contact_sheet.py`, `encode.py` and `make_sfx.py` do the same jobs on both macOS and Windows (`python3 tools/render.py <scene.py> final` here, `python tools\render.py <scene.py> final` on Windows). `python3 tools/shorts_env.py` shows which Blender and ffmpeg they found.
+- Captions use the bundled Nunito Black font (`assets/fonts/`, license in `assets/LICENSES.md`), so they look the same on both machines.
+- Renders, MP4s, the virtual environments and the voice models are git-ignored (see `.gitignore`). Recreate them with the render tools, or copy finished videos between machines by hand.
+- Sync: `git pull` before starting work; afterwards `git add -A && git commit -m "What changed" && git push`.
+
 ## Workflow for each Short
 
 1. **Topic and research.** Pick a question. Collect sources and fill in the fact-check table in `scripts/<video>.md` before writing anything visual.
