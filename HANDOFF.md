@@ -110,10 +110,12 @@ not to scale" whenever the den is cut open.
   https://github.com/lincolnthomas0609-source/animal-homes-shorts. The account is
   `lincolnthomas0609-source`, with "-source" at the end. "Page not found" in the browser
   means the browser isn't signed in as that account.
-- Cursor uses the user's school account (`lincoln.thomas@alpha.school`).
+- Cursor uses the user's school account.
 - A second remote `cursor` (`trilogy-cursor-central-account/render-kit` on Cursor's git
   host) was requested but the push was refused (403) because the Mac's `origin` CLI is
-  signed in as the Gmail account. It's optional; GitHub is enough for moving the project.
+  signed in with a different account. It's optional; GitHub is enough for moving the project.
+- To push from the PC, git must be signed in to GitHub as `lincolnthomas0609-source`
+  (`gh auth login`, or the browser prompt Git for Windows shows on the first push).
   See `REPO_SYNC.md`.
 
 ## Working with the user
