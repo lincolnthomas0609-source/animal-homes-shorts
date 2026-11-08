@@ -2,7 +2,7 @@
 
 Steps to set up a Windows gaming PC (here an RTX 5080) to render and assemble episodes.
 The Mac keeps working as before; both machines share the project through the
-Cursor-hosted git repo.
+private GitHub repo.
 
 Type the commands below in **PowerShell** or in Cursor's terminal (Terminal → New Terminal),
 inside the project folder unless a step says otherwise.
@@ -17,29 +17,18 @@ git config --global user.name "Your Name"
 git config --global user.email "you@example.com"
 ```
 
-The `origin` command-line tool that signs git in to Cursor-hosted repos only runs on macOS
-and Linux, so the reliable way to clone on Windows is an SSH key:
+The project is a private GitHub repo: https://github.com/lincolnthomas0609-source/animal-homes-shorts
 
-1. On the PC, make a key (press Enter at every question):
-   ```powershell
-   ssh-keygen -t ed25519 -C "gaming-pc"
-   Get-Content $env:USERPROFILE\.ssh\id_ed25519.pub
-   ```
-   Copy the one line it prints (starts with `ssh-ed25519`). It's the public half and safe to share.
-2. On the Mac, save that line to a file such as `~/pc_key.pub` and register it:
-   ```sh
-   origin ssh-key add --title "Gaming PC" --key-file ~/pc_key.pub
-   ```
-3. On the PC, clone with the **SSH** clone URL from the repo page
-   (`https://cursor.com/codebase/<org>/animal-homes-shorts`, see the README):
-   ```powershell
-   cd $env:USERPROFILE\Documents
-   git clone <SSH clone URL> animal-homes-shorts
-   ```
-4. In Cursor: File → Open Folder → `Documents\animal-homes-shorts`.
+1. In Cursor: Ctrl+Shift+P → type **Git: Clone** → paste
+   `https://github.com/lincolnthomas0609-source/animal-homes-shorts.git` → pick a folder
+   such as `Documents`. When it asks, sign in to GitHub in the browser as `lincolnthomas0609-source`.
+2. Click **Open** when the clone finishes.
 
-You can also try Cursor's own **Clone Repo** button (on the start screen, or Ctrl+Shift+P →
-"Git: Clone") with the HTTPS clone URL. If it asks for a password, use the SSH steps above.
+Or from PowerShell:
+```powershell
+cd $env:USERPROFILE\Documents
+git clone https://github.com/lincolnthomas0609-source/animal-homes-shorts.git
+```
 
 ## 2. Install Blender, ffmpeg and Python
 
