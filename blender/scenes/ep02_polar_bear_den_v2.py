@@ -468,17 +468,24 @@ for i, c in enumerate(cub_walk):
     delay = 22 + 14 * i
     cpath = anim.smooth_path([(x, ENTRANCE_Y, tunnel_floor(x)) for x in (1.8, 2.4)]
                              + [(MOUTH[0] + 0.25, ENTRANCE_Y, MOUTH_Z - 0.2)], 8)
-    cpath += ground_path([(DIG_SPOT[0] - 0.5, ENTRANCE_Y), (4.3, -0.55 + 0.3 * i), (5.0 - 0.4 * i, -1.4 + 0.5 * i)])
+    cpath += ground_path([(DIG_SPOT[0] - 0.5, ENTRANCE_Y), (4.3 - 0.1 * i, -0.6 - 0.5 * i),
+                          ((5.0, -1.25), (5.05, -2.55))[i]])
     ca = exit_a + delay
     cb = min(ca + 125, END - 4)
     c.root.location = cpath[0]
     walk_along(c, cpath, ca, cb, amp=0.45, ease=lambda t: anim.ease_out(t) * 0.5 + t * 0.5)
-cue("steps", exit_a + 30, -12)
+cue("steps", exit_a + 60, -12)
 male_path = ground_path([(-13.0, 19.0), (-6.0, 20.0), (1.0, 20.8)])  # far off on the coastal flats
 male.root.location = male_path[0]
 male.visible([(1, False), (f0(7), True)])
 walk_along(male, male_path, f0(7), END, amp=0.38)
 cue("whoosh", f0(8) + 10, -8)
+# Breath and loose snow should read as faint wisps, not solid balls.
+for o in bpy.data.objects:
+    if o.name.startswith(("Breath_", "BreakOut_", "DigSpray_", "Drifting_", "WarmAir_")):
+        bsdf = o.active_material.node_tree.nodes["Principled BSDF"]
+        bsdf.inputs["Alpha"].default_value = 0.22
+        bsdf.inputs["Roughness"].default_value = 1.0
 
 # ---------------------------------------------------------------- camera
 P = (0.4, PLANE_Y, 0.0)
@@ -511,15 +518,15 @@ SHOTS = [
     (f0(4) + 34, orbit(22, 10.5, 4.6), (0.8, 0.0, 1.0)),
     (f0(4) + 90, orbit(4, 7.6, 2.3), (0.4, 0.0, 0.75)),
     (f1(4), orbit(1, 5.8, 1.5), (-0.3, 0.0, 0.9)),
-    (f0(5) + 40, orbit(0, 6.6, 1.6), (1.1, 0.0, 0.7)),
+    (f0(5) + 40, orbit(0, 7.4, 1.7), (0.75, 0.0, 0.75)),
     (air_a + 10, orbit(0, 6.9, 2.3), (-0.45, 0.0, 1.45)),
     (f1(5), orbit(0, 6.5, 2.0), (-0.45, 0.0, 1.3)),
     (f0(6) + 40, (-0.35, -3.4, ROOM_FLOOR + 0.75), (-0.4, 0.05, ROOM_FLOOR + 0.25)),
     (f1(6), (-0.35, -3.1, ROOM_FLOOR + 0.7), (-0.4, 0.05, ROOM_FLOOR + 0.25)),
     (close2_a + 24, orbit(24, 10.5, 4.6), (2.4, -0.2, 0.8)),
     (swap + 10, orbit(48, 8.6, 2.6), (3.3, -0.4, 0.6)),
-    (walk2_a + 30, orbit(52, 9.4, 2.8), (4.2, -1.0, 0.6)),
-    (END, orbit(42, 13.0, 4.6), (3.8, -1.0, 0.7)),
+    (walk2_a + 30, orbit(52, 9.4, 2.6), (4.3, -1.7, 0.15)),
+    (END, orbit(40, 14.5, 3.4), (4.7, -2.3, 0.1)),
 ]
 anim.smooth_keys(cam.camera, "location", [(f, p) for f, p, _ in SHOTS])
 anim.smooth_keys(cam.aim, "location", [(f, a) for f, _, a in SHOTS])

@@ -1,0 +1,109 @@
+{
+ "duration": 54.9,
+ "cues": [
+  {
+   "name": "pop",
+   "time": 0.233,
+   "gain": 0.0
+  },
+  {
+   "name": "whoosh",
+   "time": 3.5,
+   "gain": 0.0
+  },
+  {
+   "name": "close",
+   "time": 7.1,
+   "gain": 0.0
+  },
+  {
+   "name": "dig",
+   "time": 11.533,
+   "gain": 0.0
+  },
+  {
+   "name": "open",
+   "time": 18.6,
+   "gain": 0.0
+  },
+  {
+   "name": "warm",
+   "time": 21.6,
+   "gain": -6
+  },
+  {
+   "name": "chime",
+   "time": 26.4,
+   "gain": -4
+  },
+  {
+   "name": "dig",
+   "time": 33.2,
+   "gain": -6
+  },
+  {
+   "name": "pop",
+   "time": 36.3,
+   "gain": -3
+  },
+  {
+   "name": "pop",
+   "time": 36.567,
+   "gain": -3
+  },
+  {
+   "name": "chime",
+   "time": 41.0,
+   "gain": -2
+  },
+  {
+   "name": "whoosh",
+   "time": 41.5,
+   "gain": -8
+  },
+  {
+   "name": "close",
+   "time": 45.533,
+   "gain": 0.0
+  },
+  {
+   "name": "steps",
+   "time": 49.267,
+   "gain": -10
+  }
+ ],
+ "labels": [
+  {
+   "text": "POLAR BEAR MATERNITY DEN",
+   "start": 0.0,
+   "end": 9.1
+  },
+  {
+   "text": "AUTUMN",
+   "start": 9.4,
+   "end": 18.3
+  },
+  {
+   "text": "WINTER",
+   "start": 18.6,
+   "end": 40.7
+  },
+  {
+   "text": "SPRING",
+   "start": 41.0,
+   "end": 45.033
+  },
+  {
+   "text": "Illustrative, not to scale",
+   "start": 0.0,
+   "end": 9.1,
+   "style": "Note"
+  },
+  {
+   "text": "Illustrative, not to scale",
+   "start": 18.6,
+   "end": 46.667,
+   "style": "Note"
+  }
+ ]
+}
