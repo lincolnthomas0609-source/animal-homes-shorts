@@ -11,16 +11,16 @@ built with Blender's Python API and rendered locally. Free software only.
 ## Making an episode end to end
 
 ```sh
-# 1. Narration (scratch voice) -> audio + per-line timing
-.venv-kokoro/bin/python tools/voiceover.py scripts/ep02_polar_bear_den.txt audio/narration/ep02_polar_bear_den.wav --voice am_michael --speed 1.08 --gap 0.3
+# 1. Narration (scratch voice) -> audio + per-line timing (8 lines, ends at ~34.4 s)
+.venv-kokoro/bin/python tools/voiceover.py scripts/ep02_polar_bear_den.txt audio/narration/ep02_polar_bear_den.wav --voice am_michael --speed 1.15 --gap 0.2
 #    or, with clips recorded elsewhere (ElevenLabs, your own voice), one file per script line:
 python3 tools/import_lines.py scripts/ep02_polar_bear_den.txt audio/narration/ep02_clips/ audio/narration/ep02_polar_bear_den.wav --trim
 # 2. Render (the scene reads the timing file, so animation follows the narration)
-tools/render.sh blender/scenes/ep02_polar_bear_den.py preview    # ~10 min, check it
-tools/render.sh blender/scenes/ep02_polar_bear_den.py final      # ~1 hour
-# 3. Captions + mix + export
-python3 tools/captions.py audio/narration/ep02_polar_bear_den.timing.json renders/ep02_polar_bear_den.ass --cues renders/ep02_polar_bear_den_cues.json
-python3 tools/assemble.py exports/ep02_polar_bear_den_final.mp4 audio/narration/ep02_polar_bear_den.wav renders/ep02_polar_bear_den_cues.json renders/ep02_polar_bear_den.ass exports/ep02_polar_bear_den.mp4 --ambience-until 41
+tools/render.sh blender/scenes/ep02_polar_bear_den_v2.py preview    # 540x960, ~30 min on the M3 Air
+tools/render.sh blender/scenes/ep02_polar_bear_den_v2.py final      # 1080x1920 -> exports/ep02_polar_bear_den_v2_final.mp4
+# 3. Captions + mix + export (spring_start in the cues file is the --ambience-until time)
+python3 tools/captions.py audio/narration/ep02_polar_bear_den.timing.json renders/ep02_polar_bear_den_v2.ass --cues renders/ep02_polar_bear_den_v2_cues.json
+python3 tools/assemble.py exports/ep02_polar_bear_den_v2_final.mp4 audio/narration/ep02_polar_bear_den.wav renders/ep02_polar_bear_den_v2_cues.json renders/ep02_polar_bear_den_v2.ass exports/ep02_polar_bear_den_v2.mp4 --ambience-until 27.6
 ```
 
 Sound effects are synthesized once with `tools/make_sfx.sh` (no licensing questions).

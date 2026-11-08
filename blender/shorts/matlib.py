@@ -321,14 +321,14 @@ def snow_section(name="SnowSection", entrance=None, entrance_radius=0.45, fields
     return mat
 
 
-def den_wall(name="DenWall", entrance=None, entrance_radius=0.45):
+def den_wall(name="DenWall", entrance=None, entrance_radius=0.45, colors=("#D5DFE9", "#BCCADA")):
     """Inside surface of a dug snow cavity: scooped dig marks, slight icy glaze."""
     mat, g = new(name)
     co = g.coords()
     scoops = g.voronoi(co, scale=4.5, feature="SMOOTH_F1", out="Distance")
     fine = g.noise(co, scale=45, detail=2)
     height = g.math("ADD", g.math("MULTIPLY", scoops, 0.8), g.math("MULTIPLY", fine, 0.2))
-    base = g.mix(g.map_range(scoops, 0.2, 0.6), "#D5DFE9", "#BCCADA")
+    base = g.mix(g.map_range(scoops, 0.2, 0.6), colors[0], colors[1])
     rough = g.mixf(g.map_range(g.noise(co, scale=3.0), 0.4, 0.6), 0.32, 0.55)
     if entrance is not None:
         d = g.vmath("DISTANCE", co, entrance)

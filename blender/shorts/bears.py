@@ -107,8 +107,27 @@ def _pose(kind, curl_radius, head_turn_deg):
     return place
 
 
+def _juvenile(spec):
+    """Young-cub proportions: bigger head, shorter muzzle, shorter body and limbs."""
+    def adjust(items):
+        out = []
+        for n, (u, v, w), (a, b, c), p in items:
+            if n.startswith(("Head", "Ear")):
+                a, b, c = a * 1.35, b * 1.35, c * 1.35
+            elif n.startswith("Muzzle"):
+                u, a, b, c = u - 0.05, a * 0.85, b * 1.2, c * 1.2
+            elif n.startswith(("Arm", "Front", "Haunch", "Shin", "Hind", "Thigh")):
+                a, b, c = a * 0.85, b * 0.95, c * 0.85
+            elif n in ("Rump", "Belly", "Chest"):
+                u, a = u * 0.9, a * 0.9
+            out.append((n, (u, v, w), (a, b, c), p))
+        return out
+    features = [(n, co, o, r * (1.6 if n.startswith("Eye") else 1.3)) for n, co, o, r in spec["features"]]
+    return dict(spec, torso=adjust(spec["torso"]), paired=adjust(spec["paired"]), features=features)
+
+
 def polar_bear_resting(name="Bear", size=1.0, pose="sternal", curl_radius=1.1, head_turn=0.0, fur=None,
-                       resolution=0.018, mirror=False):
+                       resolution=0.018, mirror=False, juvenile=False):
     """Adult polar bear lying down. Returns (root, body).
 
     Put root on the floor under the spine's midpoint; she faces +X and her body curves
@@ -116,7 +135,7 @@ def polar_bear_resting(name="Bear", size=1.0, pose="sternal", curl_radius=1.1, h
     mirror=True puts the head toward -X. Animate breathe(body, ...) for a slow breath.
     """
     s = size
-    spec = POSES[pose]
+    spec = _juvenile(POSES[pose]) if juvenile else POSES[pose]
     fur = fur or matlib.fur(f"{name}_Fur")
     dark = matlib.glossy_dark(f"{name}_Dark")
     place = _pose(pose, curl_radius / s, head_turn)

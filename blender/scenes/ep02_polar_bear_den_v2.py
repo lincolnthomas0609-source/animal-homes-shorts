@@ -230,7 +230,7 @@ matlib.add_solid_only(m_shaft, heights, IMG_X, IMG_Y)
 shaft = _wall_mesh("AirShaftWall", _shaft)
 materials.assign(shaft, m_shaft)
 shaft.parent = air_ctl
-m_mouth = matlib.den_wall("MouthWall", entrance=MOUTH, entrance_radius=1.0)
+m_mouth = matlib.den_wall("MouthWall", colors=("#7D8FA3", "#5F7186"))  # dug hole walls sit in shade
 matlib.add_solid_only(m_mouth, heights, IMG_X, IMG_Y)
 mouth = _wall_mesh("EntranceWall", lambda bm: bmesh.ops.create_uvsphere(bm, u_segments=32, v_segments=16, radius=1.0))
 materials.assign(mouth, m_mouth)
@@ -304,13 +304,16 @@ def season(a, b, frm, to):
 
 # ---------------------------------------------------------------- animals
 mom_rest, mom_body = bears.polar_bear_resting("Mom", size=0.92, pose="sternal", curl_radius=1.1, head_turn=-18)
-mom_rest.location = (ROOM_X - 0.05, 0.38, ROOM_FLOOR)
+mom_rest.location = (ROOM_X - 0.05, 0.45, ROOM_FLOOR)
 bears.breathe(mom_body, 1, END)
-CUB_BIRTH, CUB_SPRING = 0.18, 0.30
+CUB_BIRTH, CUB_SPRING = 0.18, 0.32
 cub_rest = []
-for i, (pos, yaw) in enumerate((((-0.80, 0.0, ROOM_FLOOR), 0.0), ((-0.30, -0.03, ROOM_FLOOR), 0.3))):
+CUB_SPOTS = [((-0.62, 0.04, ROOM_FLOOR), -0.3), ((-0.02, 0.05, ROOM_FLOOR), math.pi - 0.3)]
+for i, (pos, yaw) in enumerate(CUB_SPOTS):
+    # Newborn fur is whiter than the mother's creamy coat, which helps them read against her.
     root, body = bears.polar_bear_resting(f"Cub{i}", size=CUB_BIRTH, pose="sternal", curl_radius=0.9,
-                                          head_turn=-25 if i == 0 else 20)
+                                          head_turn=-45 if i == 0 else 40, juvenile=True,
+                                          fur=matlib.fur(f"Cub{i}_Fur", col="#FAFAF7", shade="#ECE8DE"))
     root.location, root.rotation_euler = pos, (0, 0, yaw)
     body.data.materials[0].surface_render_method = "DITHERED"
     cub_rest.append((root, body))
@@ -367,7 +370,7 @@ dig_a, dig_b = walk_b + 2, walk_b + 30
 mom.dig(dig_a, dig_b)
 tween(entrance_ctl, "scale", dig_a + 2, dig_b - 2, (0.001,) * 3, (HOLE_R,) * 3, anim.ease_out)
 effects.puffs("DigSpray", (MOUTH[0] + 0.45, ENTRANCE_Y - 0.25, surface(*MOUTH[:2]) - 0.05), dig_a + 2, dig_b + 16,
-              count=8, rise=0.55, size=0.09, color="#F4F7FA", seed=5)
+              count=10, rise=0.45, size=0.05, color="#F4F7FA", seed=5)
 cue("dig", dig_a)
 crawl_a, crawl_b = dig_b + 2, dig_b + 34
 mom.crouch(dig_b - 4, crawl_a, 0.55)
@@ -446,7 +449,7 @@ for c in cub_walk:
 break_a = swap + 1
 tween(entrance_ctl, "scale", break_a, break_a + 16, (0.001,) * 3, (HOLE_R,) * 3, anim.ease_out)
 effects.puffs("BreakOut", (MOUTH[0] + 0.45, ENTRANCE_Y - 0.25, surface(*MOUTH[:2]) - 0.05), break_a, break_a + 26,
-              count=7, rise=0.6, size=0.09, color="#F7F9FB", seed=11)
+              count=10, rise=0.45, size=0.045, color="#F7F9FB", seed=11)
 cue("dig", break_a)
 
 # 8. The family walks out into the sun; pull back; a male walks far off.
@@ -462,18 +465,19 @@ walk2_a, walk2_b = exit_b + 8, END - 12
 walk_along(mom, family_path, walk2_a, walk2_b, amp=0.32, ease=lambda t: anim.ease_out(t) * 0.5 + t * 0.5)
 cue("steps", walk2_a, -8)
 for i, c in enumerate(cub_walk):
-    delay = 16 + 14 * i
+    delay = 22 + 14 * i
     cpath = anim.smooth_path([(x, ENTRANCE_Y, tunnel_floor(x)) for x in (1.8, 2.4)]
                              + [(MOUTH[0] + 0.25, ENTRANCE_Y, MOUTH_Z - 0.2)], 8)
     cpath += ground_path([(DIG_SPOT[0] - 0.5, ENTRANCE_Y), (4.3, -0.55 + 0.3 * i), (5.0 - 0.4 * i, -1.4 + 0.5 * i)])
-    ca, cb = exit_a + delay, walk2_b + delay // 2
+    ca = exit_a + delay
+    cb = min(ca + 125, END - 4)
     c.root.location = cpath[0]
     walk_along(c, cpath, ca, cb, amp=0.45, ease=lambda t: anim.ease_out(t) * 0.5 + t * 0.5)
 cue("steps", exit_a + 30, -12)
-male_path = ground_path([(-7.5, 13.5), (-2.0, 14.2), (3.0, 14.6)])
+male_path = ground_path([(-13.0, 19.0), (-6.0, 20.0), (1.0, 20.8)])  # far off on the coastal flats
 male.root.location = male_path[0]
-male.visible([(1, False), (f0(8) - 20, True)])
-walk_along(male, male_path, f0(8) - 20, END, amp=0.38)
+male.visible([(1, False), (f0(7), True)])
+walk_along(male, male_path, f0(7), END, amp=0.38)
 cue("whoosh", f0(8) + 10, -8)
 
 # ---------------------------------------------------------------- camera
@@ -494,11 +498,11 @@ dof.focus_object = focus
 fill = lighting.area_light("CamFill", (0, 0, 0), energy=35, size=4.0, color=(0.8, 0.87, 1.0))
 fill.parent = cam.camera
 fill.location, fill.rotation_euler = (1.2, 1.5, 0.0), (0.0, 0.0, 0.0)
-CUB0 = (-0.80, 0.0, ROOM_FLOOR + 0.1)
+CUB0 = (CUB_SPOTS[0][0][0], CUB_SPOTS[0][0][1], ROOM_FLOOR + 0.08)
 SHOTS = [
     # frame, camera position, aim
-    (1, (-0.50, -2.05, ROOM_FLOOR + 0.55), (-0.72, 0.0, ROOM_FLOOR + 0.12)),
-    (f1(1), (-0.40, -2.45, ROOM_FLOOR + 0.65), (-0.62, 0.05, ROOM_FLOOR + 0.16)),
+    (1, (-0.45, -2.55, ROOM_FLOOR + 0.5), (-0.5, 0.1, ROOM_FLOOR + 0.2)),
+    (f1(1), (-0.38, -2.95, ROOM_FLOOR + 0.62), (-0.45, 0.1, ROOM_FLOOR + 0.24)),
     (f0(2) + 45, orbit(4, 6.5, 1.9), (0.2, 0.0, 0.85)),
     (f1(2) - 4, orbit(30, 13.5, 5.0), (0.9, 0.0, 0.9)),
     (f0(3) + 20, orbit(44, 11.5, 3.4), (3.4, -0.9, 0.6)),
@@ -510,11 +514,12 @@ SHOTS = [
     (f0(5) + 40, orbit(0, 6.6, 1.6), (1.1, 0.0, 0.7)),
     (air_a + 10, orbit(0, 6.9, 2.3), (-0.45, 0.0, 1.45)),
     (f1(5), orbit(0, 6.5, 2.0), (-0.45, 0.0, 1.3)),
-    (f0(6) + 40, orbit(0, 4.7, 1.25), (-0.5, 0.0, ROOM_FLOOR + 0.35)),
-    (f1(6), orbit(0, 4.4, 1.2), (-0.5, 0.0, ROOM_FLOOR + 0.35)),
-    (swap + 4, orbit(48, 8.6, 2.4), (3.3, -0.4, 0.6)),
-    (walk2_a + 30, orbit(52, 9.6, 2.8), (4.2, -1.0, 0.6)),
-    (END, orbit(38, 17.0, 6.5), (3.4, -1.0, 0.8)),
+    (f0(6) + 40, (-0.35, -3.4, ROOM_FLOOR + 0.75), (-0.4, 0.05, ROOM_FLOOR + 0.25)),
+    (f1(6), (-0.35, -3.1, ROOM_FLOOR + 0.7), (-0.4, 0.05, ROOM_FLOOR + 0.25)),
+    (close2_a + 24, orbit(24, 10.5, 4.6), (2.4, -0.2, 0.8)),
+    (swap + 10, orbit(48, 8.6, 2.6), (3.3, -0.4, 0.6)),
+    (walk2_a + 30, orbit(52, 9.4, 2.8), (4.2, -1.0, 0.6)),
+    (END, orbit(42, 13.0, 4.6), (3.8, -1.0, 0.7)),
 ]
 anim.smooth_keys(cam.camera, "location", [(f, p) for f, p, _ in SHOTS])
 anim.smooth_keys(cam.aim, "location", [(f, a) for f, _, a in SHOTS])
@@ -523,7 +528,7 @@ anim.smooth_keys(focus, "location", [(1, CUB0), (f1(1), CUB0), (f0(2) + 45, (0.6
                                      (f0(3) + 20, (3.6, -0.6, 0.6)), (f1(3), (3.2, -0.1, 0.6)),
                                      (f0(4) + 90, (0.2, PLANE_Y + 0.3, 0.9)), (f1(4), (ROOM_X + 0.3, 0.2, ROOM_Z - 0.1)),
                                      (f0(5) + 40, (1.0, PLANE_Y, 0.7)), (f1(5), (-0.5, PLANE_Y, 1.2)),
-                                     (f0(6) + 40, (-0.5, 0.05, ROOM_FLOOR + 0.2)), (swap + 4, (3.6, -0.3, 0.6)),
+                                     (f0(6) + 40, (-0.4, 0.05, ROOM_FLOOR + 0.1)), (swap + 10, (3.6, -0.3, 0.6)),
                                      (END, (4.5, -1.5, 0.6))])
 
 # ---------------------------------------------------------------- output
