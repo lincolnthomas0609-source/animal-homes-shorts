@@ -69,11 +69,6 @@
   },
   {
    "name": "steps",
-   "time": 30.367,
-   "gain": -12
-  },
-  {
-   "name": "steps",
    "time": 30.5,
    "gain": -8
   },
@@ -81,6 +76,11 @@
    "name": "whoosh",
    "time": 30.833,
    "gain": -8
+  },
+  {
+   "name": "steps",
+   "time": 31.367,
+   "gain": -12
   }
  ],
  "labels": [

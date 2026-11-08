@@ -69,12 +69,12 @@ To open a scene in Blender's interface and look around: open `renders/<scene nam
 
 ## Working on two machines
 
-The project is a private git repo hosted on Cursor, so it can be rendered on a Windows PC as well as this Mac.
-Setup steps for the PC are in [`SETUP_WINDOWS.md`](SETUP_WINDOWS.md).
+The project is a private GitHub repo ([animal-homes-shorts](https://github.com/lincolnthomas0609-source/animal-homes-shorts)), with large files in Git LFS.
+Rendering now happens on the Windows PC: setup steps are in [`SETUP_WINDOWS.md`](SETUP_WINDOWS.md), and the current state of the work is in [`HANDOFF.md`](HANDOFF.md).
 
 - The zsh scripts in `tools/*.sh` are Mac-only. `tools/render.py`, `stills.py`, `contact_sheet.py`, `encode.py` and `make_sfx.py` do the same jobs on both macOS and Windows (`python3 tools/render.py <scene.py> final` here, `python tools\render.py <scene.py> final` on Windows). `python3 tools/shorts_env.py` shows which Blender and ffmpeg they found.
 - Captions use the bundled Nunito Black font (`assets/fonts/`, license in `assets/LICENSES.md`), so they look the same on both machines.
-- Renders, MP4s, the virtual environments and the voice models are git-ignored (see `.gitignore`). Recreate them with the render tools, or copy finished videos between machines by hand.
+- Raw render frames (`renders/*/`) and the virtual environments are git-ignored (see `.gitignore`). MP4s, audio, images, `.blend` files and voice models are tracked through Git LFS (see [`REPO_SYNC.md`](REPO_SYNC.md)).
 - Sync: `git pull` before starting work; afterwards `git add -A && git commit -m "What changed" && git push`.
 
 ## Workflow for each Short

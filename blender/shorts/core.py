@@ -27,6 +27,8 @@ def parse_args():
     p.add_argument("--frames", help="start:end subset, e.g. 120:120 for a still")
     p.add_argument("--out", help="frame output directory (default renders/<name>_<quality>)")
     p.add_argument("--stills", help="comma-separated frames to render individually after one build")
+    p.add_argument("--resume", action="store_true",
+                   help="skip frames that already exist in the output folder (restart an interrupted render)")
     return p.parse_args(argv)
 
 
@@ -109,6 +111,13 @@ def finish(scene, name, args):
             print(f"[shorts] {name}: still {frame} in {time.time() - t:.1f}s -> {scene.render.filepath}")
         return
     scene.render.filepath = os.path.join(out, "frame_")
+    if getattr(args, "resume", False):
+        for f in os.listdir(out):
+            path = os.path.join(out, f)
+            if f.startswith("frame_") and os.path.getsize(path) == 0:  # placeholder of an interrupted frame
+                os.remove(path)
+        scene.render.use_overwrite = False
+        scene.render.use_placeholder = True
     print(f"[shorts] {name}: frames {scene.frame_start}-{scene.frame_end} -> {out}")
     if args.render:
         bpy.ops.render.render(animation=True)

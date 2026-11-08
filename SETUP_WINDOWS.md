@@ -27,8 +27,15 @@ The project is a private GitHub repo: https://github.com/lincolnthomas0609-sourc
 Or from PowerShell:
 ```powershell
 cd $env:USERPROFILE\Documents
+git lfs install
 git clone https://github.com/lincolnthomas0609-source/animal-homes-shorts.git
 ```
+
+Videos, audio, images, `.blend` files and voice models are stored with Git LFS (Git for
+Windows includes it). If you cloned before Nov 7, 2026 or a `.wav` file is only about
+130 bytes, run `git lfs install` and then `git pull` and `git lfs pull` in the project folder.
+
+Then read `HANDOFF.md`: it says where the current episode stands and what to do next.
 
 ## 2. Install Blender, ffmpeg and Python
 
@@ -72,12 +79,8 @@ py -3.11 -m venv .venv-kokoro
 .venv-kokoro\Scripts\pip install kokoro-onnx soundfile
 ```
 
-Download the two model files into `audio\voices\kokoro\` (they're too big for git):
-
-- <https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/kokoro-v1.0.onnx>
-- <https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/voices-v1.0.bin>
-
-Then, for example:
+The two model files (`kokoro-v1.0.onnx`, `voices-v1.0.bin`) come with the repo through Git LFS
+in `audio\voices\kokoro\`. Then, for example:
 
 ```powershell
 .venv-kokoro\Scripts\python tools\voiceover.py scripts\ep02_polar_bear_den.txt audio\narration\ep02_polar_bear_den.wav --voice am_michael --speed 1.08 --gap 0.3
@@ -141,8 +144,9 @@ Captions use the bundled Nunito Black font in `assets\fonts\`, so they look the 
 
 ## 6. Syncing between the Mac and the PC
 
-Code, scenes, scripts, narration, sound effects and preview PNGs are in git. Renders, videos,
-virtual environments and voice models are not (see `.gitignore`).
+Code, scenes, scripts, narration, sound effects, voice models, previews and exported videos
+are in git (large files through Git LFS). Raw render frame folders (`renders\*\`) and the
+virtual environments are not (see `.gitignore`).
 
 - **Get the latest changes** (do this before you start working on either machine):
   `git pull`
@@ -152,9 +156,9 @@ virtual environments and voice models are not (see `.gitignore`).
   git commit -m "Describe what changed"
   git push
   ```
-- **Finished videos** (`exports\*.mp4`, `previews\*.mp4`) are git-ignored because they're
-  large. Upload the final MP4 to YouTube directly from the PC, or copy it to the Mac with a USB
-  drive or a cloud folder (iCloud Drive, Google Drive, OneDrive).
+- **Finished videos** (`exports\*.mp4`, `previews\*.mp4`) go through Git LFS, which counts
+  against GitHub's LFS storage quota, so commit only the ones worth keeping. Upload the final
+  MP4 to YouTube directly from the PC.
 
 Avoid editing the same file on both machines without pulling in between; if `git pull` reports
 a conflict, ask the Cursor agent to resolve it.
